@@ -1,8 +1,11 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
+import ProgressionTable from "./components/ProgressionTable";
 
 const App = (): JSX.Element => (
-  <div>Hello olleH A Change</div>
+  <>
+    <ProgressionTable />
+  </>
 );
 
 ReactDOM.render(<App />, document.getElementById('root'))
