@@ -1,5 +1,8 @@
 import * as React from 'react';
+import ProgressFullChart from './ProgressFullChart';
 import ProgressSelect from './ProgressSelect';
+import ProgressSet from './ProgressSet';
+import ProgressSetCard from './ProgressSetCard';
 const { useState, useEffect } = React;
 interface ORMData {
   timesToLift: number[],
@@ -13,11 +16,15 @@ const tableData: ORMData = require('../lib/weightData.json');
 export default () => {
   const [day, setDay] = useState(0); // something async in future
   const [max, setMax] = useState(200); // cookie check local storage etc
+  const [showFullChart, setShowFullChart] = useState(true);
   const updateMax = (e: React.FormEvent<HTMLSelectElement>) => {
     setMax(Number(e.currentTarget.value));
   }
-  const updateDay = (e: React.FormEvent<HTMLSelectElement>) => {
+  const updateDaySelect = (e: React.FormEvent<HTMLSelectElement>) => {
     setDay(Number(e.currentTarget.value));
+  }
+  const updateDayClick = (e:  React.MouseEvent<HTMLDivElement>, index: number) => {
+    setDay(index);
   }
 
   const { ORM, timesToLift } = tableData;
@@ -32,15 +39,23 @@ export default () => {
   const oneRepMaxOptions = Object.keys(ORM);
   const dayOptions = [...Array(14)].map((x, i) => String(i));
   return (
-    <div className="container mx-auto">
-      <div>Progression Table here</div>
-      <h1 style={{ display: "inline" }}>Day</h1>
-      <ProgressSelect name="day" value={day} onChange={updateDay} options={dayOptions} />
-      <h1 style={{ display: "inline" }}>Starting max:</h1>
-      <ProgressSelect name="max" value={max} onChange={updateMax} options={oneRepMaxOptions} />
-      {reps.map((repCount, i) => {
-        return <p key={repCount}>{weights[i]} x {repCount}</p>
-      })}
+    <div className="container font-mono h-5/6 my-12 mx-auto px-4 bg-neutral-50 shadow-2xl shadow-indigo-500/50">
+      <h1>Progression is here!</h1>
+      <div className='flex flex-row'>
+        <ProgressSelect name="day" value={day} onChange={updateDaySelect} options={dayOptions} />
+        <ProgressSelect name="max" label="Starting Max" value={max} onChange={updateMax} options={oneRepMaxOptions} />
+        <ProgressSet set={reps} weights={weights} />
+      </div>
+      <br />
+      <div>
+        <div className='grid grid-cols-6 gap-4'>
+          {dayOptions.map((x, i) => {
+            const [weights, set] = getTodaysWorkout(i, max)
+            return <ProgressSetCard {...{ index: i, day, weights, set, key: `fullday#${i}`, onClick: updateDayClick}} />;
+          })
+          }
+        </div>
+      </div>
     </div>
-  )
+  );
 };
