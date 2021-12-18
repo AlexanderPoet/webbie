@@ -48,7 +48,7 @@ export default () => {
       </div>
       <br />
       <div>
-        <div className='grid grid-cols-6 gap-4'>
+        <div className='grid grid-cols-7 gap-4'>
           {dayOptions.map((x, i) => {
             const [weights, set] = getTodaysWorkout(i, max)
             return <ProgressSetCard {...{ index: i, day, weights, set, key: `fullday#${i}`, onClick: updateDayClick}} />;
